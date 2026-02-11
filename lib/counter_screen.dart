@@ -11,6 +11,10 @@ class CounterScreen extends StatelessWidget {
 
     final counter = context.watch<CounterProvider>();
 
+    // Rebuilds selectively shorter version
+    final count = context.select<CounterProvider, int>((counter) => counter.count);
+
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Provider Counter App'),
@@ -19,8 +23,12 @@ class CounterScreen extends StatelessWidget {
       body: Column(
         mainAxisAlignment: .center,
         children: [
+
+          // Using watch
           Text(counter.count.toString(), style: Theme.of(context).textTheme.displayLarge),
+
           const SizedBox(height: 15,),
+
           Row(
             mainAxisAlignment: .center,
             children: [
@@ -33,6 +41,19 @@ class CounterScreen extends StatelessWidget {
                 ),
                   child: Icon(Icons.remove),
               ),
+
+              const SizedBox(height: 10,),
+
+              // Rebuilds selectively
+              Selector<CounterProvider, int> (
+                selector: (context, counter) => counter.count,
+                builder: (context, count, child) {
+                  return Text(count.toString(), style: Theme.of(context).textTheme.displayLarge);
+                }
+              ),
+              // Shorter version
+              Text('$count')
+
             ]
           )
         ],
